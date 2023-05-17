@@ -1,0 +1,231 @@
+ARM GAS  /tmp/cci9AwhF.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"utils.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/utils.c"
+  20              		.section	.text.tick_get_100us,"ax",%progbits
+  21              		.align	1
+  22              		.global	tick_get_100us
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	tick_get_100us:
+  28              	.LFB133:
+   1:Core/Src/utils.c **** #include "utils.h"
+   2:Core/Src/utils.c **** #include "main.h"
+   3:Core/Src/utils.c **** uint32_t tick_100us = 0;
+   4:Core/Src/utils.c **** 
+   5:Core/Src/utils.c **** /**
+   6:Core/Src/utils.c ****  * @brief Returns true if a given time has passed
+   7:Core/Src/utils.c ****  *
+   8:Core/Src/utils.c ****  * @param delay_100us_last Starting time
+   9:Core/Src/utils.c ****  * @param delay_100us Desired period
+  10:Core/Src/utils.c ****  * @return true Period has elapsed
+  11:Core/Src/utils.c ****  * @return false Period has not elapsed
+  12:Core/Src/utils.c ****  */
+  13:Core/Src/utils.c **** uint8_t delay_fun(uint32_t *delay_100us_last, uint32_t delay_100us)
+  14:Core/Src/utils.c **** {
+  15:Core/Src/utils.c ****     uint32_t current_time = tick_get_100us();
+  16:Core/Src/utils.c **** 
+  17:Core/Src/utils.c ****     if (current_time > *delay_100us_last && (current_time - *delay_100us_last) >= delay_100us)
+  18:Core/Src/utils.c ****     {
+  19:Core/Src/utils.c ****         *delay_100us_last = current_time;
+  20:Core/Src/utils.c ****         return 1;
+  21:Core/Src/utils.c ****     }
+  22:Core/Src/utils.c ****     else if (current_time < *delay_100us_last && (UINT32_MAX - current_time - *delay_100us_last) >=
+  23:Core/Src/utils.c ****     {
+  24:Core/Src/utils.c ****         *delay_100us_last = current_time;
+  25:Core/Src/utils.c ****         return 1;
+  26:Core/Src/utils.c ****     }
+  27:Core/Src/utils.c ****     /*In case of timer overflow, the delay is computed correctly*/
+  28:Core/Src/utils.c **** 
+  29:Core/Src/utils.c ****     return 0;
+  30:Core/Src/utils.c **** }
+ARM GAS  /tmp/cci9AwhF.s 			page 2
+
+
+  31:Core/Src/utils.c **** 
+  32:Core/Src/utils.c **** /*Return the value of the counter that is incremented every 100us*/
+  33:Core/Src/utils.c **** uint32_t tick_get_100us(void)
+  34:Core/Src/utils.c **** {
+  29              		.loc 1 34 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  35:Core/Src/utils.c ****     return tick_100us;
+  34              		.loc 1 35 5 view .LVU1
+  36:Core/Src/utils.c **** }
+  35              		.loc 1 36 1 is_stmt 0 view .LVU2
+  36 0000 014B     		ldr	r3, .L2
+  37 0002 1868     		ldr	r0, [r3]
+  38 0004 7047     		bx	lr
+  39              	.L3:
+  40 0006 00BF     		.align	2
+  41              	.L2:
+  42 0008 00000000 		.word	tick_100us
+  43              		.cfi_endproc
+  44              	.LFE133:
+  46              		.section	.text.delay_fun,"ax",%progbits
+  47              		.align	1
+  48              		.global	delay_fun
+  49              		.syntax unified
+  50              		.thumb
+  51              		.thumb_func
+  53              	delay_fun:
+  54              	.LVL0:
+  55              	.LFB132:
+  14:Core/Src/utils.c ****     uint32_t current_time = tick_get_100us();
+  56              		.loc 1 14 1 is_stmt 1 view -0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 0
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  14:Core/Src/utils.c ****     uint32_t current_time = tick_get_100us();
+  60              		.loc 1 14 1 is_stmt 0 view .LVU4
+  61 0000 38B5     		push	{r3, r4, r5, lr}
+  62              		.cfi_def_cfa_offset 16
+  63              		.cfi_offset 3, -16
+  64              		.cfi_offset 4, -12
+  65              		.cfi_offset 5, -8
+  66              		.cfi_offset 14, -4
+  67 0002 0446     		mov	r4, r0
+  68 0004 0D46     		mov	r5, r1
+  15:Core/Src/utils.c **** 
+  69              		.loc 1 15 5 is_stmt 1 view .LVU5
+  15:Core/Src/utils.c **** 
+  70              		.loc 1 15 29 is_stmt 0 view .LVU6
+  71 0006 FFF7FEFF 		bl	tick_get_100us
+  72              	.LVL1:
+  17:Core/Src/utils.c ****     {
+  73              		.loc 1 17 5 is_stmt 1 view .LVU7
+  17:Core/Src/utils.c ****     {
+  74              		.loc 1 17 24 is_stmt 0 view .LVU8
+  75 000a 2368     		ldr	r3, [r4]
+ARM GAS  /tmp/cci9AwhF.s 			page 3
+
+
+  17:Core/Src/utils.c ****     {
+  76              		.loc 1 17 8 view .LVU9
+  77 000c 8342     		cmp	r3, r0
+  78 000e 02D2     		bcs	.L5
+  17:Core/Src/utils.c ****     {
+  79              		.loc 1 17 59 discriminator 1 view .LVU10
+  80 0010 C21A     		subs	r2, r0, r3
+  17:Core/Src/utils.c ****     {
+  81              		.loc 1 17 42 discriminator 1 view .LVU11
+  82 0012 AA42     		cmp	r2, r5
+  83 0014 07D2     		bcs	.L10
+  84              	.L5:
+  22:Core/Src/utils.c ****     {
+  85              		.loc 1 22 10 is_stmt 1 view .LVU12
+  22:Core/Src/utils.c ****     {
+  86              		.loc 1 22 13 is_stmt 0 view .LVU13
+  87 0016 8342     		cmp	r3, r0
+  88 0018 0BD9     		bls	.L7
+  22:Core/Src/utils.c ****     {
+  89              		.loc 1 22 62 discriminator 1 view .LVU14
+  90 001a C243     		mvns	r2, r0
+  22:Core/Src/utils.c ****     {
+  91              		.loc 1 22 77 discriminator 1 view .LVU15
+  92 001c D31A     		subs	r3, r2, r3
+  22:Core/Src/utils.c ****     {
+  93              		.loc 1 22 47 discriminator 1 view .LVU16
+  94 001e AB42     		cmp	r3, r5
+  95 0020 04D2     		bcs	.L11
+  29:Core/Src/utils.c **** }
+  96              		.loc 1 29 12 view .LVU17
+  97 0022 0020     		movs	r0, #0
+  98              	.LVL2:
+  29:Core/Src/utils.c **** }
+  99              		.loc 1 29 12 view .LVU18
+ 100 0024 06E0     		b	.L6
+ 101              	.LVL3:
+ 102              	.L10:
+  19:Core/Src/utils.c ****         return 1;
+ 103              		.loc 1 19 9 is_stmt 1 view .LVU19
+  19:Core/Src/utils.c ****         return 1;
+ 104              		.loc 1 19 27 is_stmt 0 view .LVU20
+ 105 0026 2060     		str	r0, [r4]
+  20:Core/Src/utils.c ****     }
+ 106              		.loc 1 20 9 is_stmt 1 view .LVU21
+  20:Core/Src/utils.c ****     }
+ 107              		.loc 1 20 16 is_stmt 0 view .LVU22
+ 108 0028 0120     		movs	r0, #1
+ 109              	.LVL4:
+  20:Core/Src/utils.c ****     }
+ 110              		.loc 1 20 16 view .LVU23
+ 111 002a 03E0     		b	.L6
+ 112              	.LVL5:
+ 113              	.L11:
+  24:Core/Src/utils.c ****         return 1;
+ 114              		.loc 1 24 9 is_stmt 1 view .LVU24
+  24:Core/Src/utils.c ****         return 1;
+ 115              		.loc 1 24 27 is_stmt 0 view .LVU25
+ARM GAS  /tmp/cci9AwhF.s 			page 4
+
+
+ 116 002c 2060     		str	r0, [r4]
+  25:Core/Src/utils.c ****     }
+ 117              		.loc 1 25 9 is_stmt 1 view .LVU26
+  25:Core/Src/utils.c ****     }
+ 118              		.loc 1 25 16 is_stmt 0 view .LVU27
+ 119 002e 0120     		movs	r0, #1
+ 120              	.LVL6:
+  25:Core/Src/utils.c ****     }
+ 121              		.loc 1 25 16 view .LVU28
+ 122 0030 00E0     		b	.L6
+ 123              	.LVL7:
+ 124              	.L7:
+  29:Core/Src/utils.c **** }
+ 125              		.loc 1 29 12 view .LVU29
+ 126 0032 0020     		movs	r0, #0
+ 127              	.LVL8:
+ 128              	.L6:
+  30:Core/Src/utils.c **** 
+ 129              		.loc 1 30 1 view .LVU30
+ 130 0034 38BD     		pop	{r3, r4, r5, pc}
+  30:Core/Src/utils.c **** 
+ 131              		.loc 1 30 1 view .LVU31
+ 132              		.cfi_endproc
+ 133              	.LFE132:
+ 135              		.global	tick_100us
+ 136              		.section	.bss.tick_100us,"aw",%nobits
+ 137              		.align	2
+ 140              	tick_100us:
+ 141 0000 00000000 		.space	4
+ 142              		.text
+ 143              	.Letext0:
+ 144              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 145              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 146              		.file 4 "Core/Inc/utils.h"
+ARM GAS  /tmp/cci9AwhF.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 utils.c
+     /tmp/cci9AwhF.s:21     .text.tick_get_100us:00000000 $t
+     /tmp/cci9AwhF.s:27     .text.tick_get_100us:00000000 tick_get_100us
+     /tmp/cci9AwhF.s:42     .text.tick_get_100us:00000008 $d
+     /tmp/cci9AwhF.s:140    .bss.tick_100us:00000000 tick_100us
+     /tmp/cci9AwhF.s:47     .text.delay_fun:00000000 $t
+     /tmp/cci9AwhF.s:53     .text.delay_fun:00000000 delay_fun
+     /tmp/cci9AwhF.s:137    .bss.tick_100us:00000000 $d
+
+NO UNDEFINED SYMBOLS
