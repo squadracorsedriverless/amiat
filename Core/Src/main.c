@@ -19,14 +19,20 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "can.h"
+#include "dma.h"
 #include "gpio.h"
+#include "iwdg.h"
 #include "spi.h"
+#include "tim.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "can_comms.h"
 #include "mission.h"
+#include "tim.h"
 #include "utils.h"
+#include "visEffect.h"
+#include "ws2812_spi.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,7 +64,13 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM7) // tick
+    {
+        tick_100us++;
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -89,24 +101,31 @@ int main(void)
 
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
+    MX_DMA_Init();
     MX_CAN1_Init();
     MX_SPI1_Init();
+    MX_TIM7_Init();
+    MX_IWDG_Init();
     /* USER CODE BEGIN 2 */
+    HAL_TIM_Base_Start_IT(&htim7);
 
+    ws2812_spi_set_all(0);
+    ws2812_spi_send(&hspi1);
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
+    static uint32_t delay_100us_last = 0;
     while (1)
     {
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
+        HAL_IWDG_Refresh(&hiwdg);
         mission_run();
+        // visHandle();
 
-        static uint32_t delay_100us_last = 0;
-
-        if (delay_fun(&delay_100us_last, 500))
+        if (delay_fun(&delay_100us_last, 1000))
         {
             uint8_t data = mission_is_confirmed() ? mission_get() : MISSION_NO;
 
@@ -135,8 +154,9 @@ void SystemClock_Config(void)
     /** Initializes the RCC Oscillators according to the specified parameters
      * in the RCC_OscInitTypeDef structure.
      */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_HSE;
     RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+    RCC_OscInitStruct.LSIState = RCC_LSI_ON;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
     RCC_OscInitStruct.PLL.PLLM = 5;

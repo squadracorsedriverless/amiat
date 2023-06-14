@@ -1,6 +1,6 @@
 #include "ws2812_spi.h"
 
-uint8_t ws2812_buffer[WS2812_BUF_LEN + 128] = {0};
+uint8_t ws2812_buffer[WS2812_BUF_LEN + WS2812_BUF_RESET_LEN] = {0};
 
 uint32_t ws2812_spi_get_led(uint16_t index)
 {
@@ -26,7 +26,7 @@ void ws2812_spi_set_all(uint32_t color)
 
 void ws2812_spi_send(SPI_HandleTypeDef *hspi)
 {
-    HAL_SPI_Transmit_DMA(hspi, ws2812_buffer, WS2812_BUF_LEN + 64);
+    HAL_SPI_Transmit_DMA(hspi, ws2812_buffer, WS2812_BUF_LEN + WS2812_BUF_RESET_LEN);
 }
 
 void HAL_SPI_TxHalfCpltCallback(SPI_HandleTypeDef *hspi)

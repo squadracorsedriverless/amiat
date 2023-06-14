@@ -1,7 +1,6 @@
 #include "can_comms.h"
 #include "main.h"
 #include "mission.h"
-#include "spi.h"
 #include "utils.h"
 #include "ws2812_spi.h"
 
@@ -29,6 +28,18 @@ void can_recv(CAN_HandleTypeDef *hcan, uint8_t fifo)
     else if (RxHeader.StdId == CAN_MISSION_CONFIRM_ID && RxHeader.DLC == 1)
     {
         mission_confirm();
+    }
+    else if (RxHeader.StdId == CAN_SPARE_LED_0_ID && RxHeader.DLC == 3)
+    {
+        ws2812_spi_set_led(IDX_SPARE_LED_0, WS2812_COLOR(RxData[0], RxData[1], RxData[2]));
+    }
+    else if (RxHeader.StdId == CAN_SPARE_LED_1_ID && RxHeader.DLC == 3)
+    {
+        ws2812_spi_set_led(IDX_SPARE_LED_1, WS2812_COLOR(RxData[0], RxData[1], RxData[2]));
+    }
+    else if (RxHeader.StdId == CAN_SPARE_LED_2_ID && RxHeader.DLC == 3)
+    {
+        ws2812_spi_set_led(IDX_SPARE_LED_2, WS2812_COLOR(RxData[0], RxData[1], RxData[2]));
     }
 }
 

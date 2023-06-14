@@ -38,14 +38,18 @@ BUILD_DIR = build
 C_SOURCES =  \
 Core/Src/can.c \
 Core/Src/can_comms.c \
+Core/Src/dma.c \
 Core/Src/gpio.c \
+Core/Src/iwdg.c \
 Core/Src/main.c \
 Core/Src/mission.c \
 Core/Src/spi.c \
 Core/Src/stm32l4xx_hal_msp.c \
 Core/Src/stm32l4xx_it.c \
 Core/Src/system_stm32l4xx.c \
+Core/Src/tim.c \
 Core/Src/utils.c \
+Core/Src/visEffect.c \
 Core/Src/ws2812_spi.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_can.c \
@@ -57,6 +61,7 @@ Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ex.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ramfunc.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c \
+Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_iwdg.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c \
