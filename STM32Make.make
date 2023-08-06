@@ -48,6 +48,7 @@ Core/Src/stm32l4xx_hal_msp.c \
 Core/Src/stm32l4xx_it.c \
 Core/Src/system_stm32l4xx.c \
 Core/Src/tim.c \
+Core/Src/tlb_battery.c \
 Core/Src/utils.c \
 Core/Src/visEffect.c \
 Core/Src/ws2812_spi.c \
@@ -261,6 +262,23 @@ clean:
 #######################################
 
 
+
+
+#######################################
+# convert
+#######################################
+convert: 
+	bin2srec -a 0x8004000 -i $(BUILD_DIR)/$(TARGET).bin -o $(BUILD_DIR)/$(TARGET).srec
+      
+
+
+#######################################
+# canflash
+#######################################
+canflash: convert
+	echo "flashing 00"; bootcommander -t=xcp_can -d=can0 -b=1000000 -tid=025 -rid=024 $(BUILD_DIR)/$(TARGET).srec;
+
+      
 	
 #######################################
 # dependencies

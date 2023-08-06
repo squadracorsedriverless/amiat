@@ -22,7 +22,9 @@
 
 /* USER CODE BEGIN 0 */
 #include "can_comms.h"
+#include "tlb_battery.h"
 #include "utils.h"
+
 CAN_FilterTypeDef sFilterConfig;
 
 /* USER CODE END 0 */
@@ -47,10 +49,10 @@ void MX_CAN1_Init(void)
     hcan1.Init.TimeSeg1 = CAN_BS1_13TQ;
     hcan1.Init.TimeSeg2 = CAN_BS2_2TQ;
     hcan1.Init.TimeTriggeredMode = DISABLE;
-    hcan1.Init.AutoBusOff = DISABLE;
+    hcan1.Init.AutoBusOff = ENABLE;
     hcan1.Init.AutoWakeUp = DISABLE;
     hcan1.Init.AutoRetransmission = DISABLE;
-    hcan1.Init.ReceiveFifoLocked = ENABLE;
+    hcan1.Init.ReceiveFifoLocked = DISABLE;
     hcan1.Init.TransmitFifoPriority = DISABLE;
     if (HAL_CAN_Init(&hcan1) != HAL_OK)
     {
@@ -62,9 +64,10 @@ void MX_CAN1_Init(void)
     sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
     sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
     sFilterConfig.FilterActivation = ENABLE;
+    sFilterConfig.SlaveStartFilterBank = 14;
 
     sFilterConfig.FilterIdHigh = (CAN_BOOTLOADER_ID << 5);
-    sFilterConfig.FilterIdLow = (CAN_MISSION_NEXT_ID << 5);
+    sFilterConfig.FilterIdLow = (CAN_BTN_STATUS_ID << 5);
 
     if (HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig) != HAL_OK)
     {
@@ -73,16 +76,6 @@ void MX_CAN1_Init(void)
     }
 
     sFilterConfig.FilterBank = 1;
-    sFilterConfig.FilterIdHigh = (CAN_MISSION_CONFIRM_ID << 5);
-    sFilterConfig.FilterIdLow = (CAN_MISSION_STATUS_ID << 5);
-
-    if (HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig) != HAL_OK)
-    {
-        /* Filter configuration Error */
-        Error_Handler();
-    }
-
-    sFilterConfig.FilterBank = 2;
     sFilterConfig.FilterIdHigh = (CAN_SPARE_LED_0_ID << 5);
     sFilterConfig.FilterIdLow = (CAN_SPARE_LED_1_ID << 5);
 
@@ -94,7 +87,7 @@ void MX_CAN1_Init(void)
 
     sFilterConfig.FilterBank = 3;
     sFilterConfig.FilterIdHigh = (CAN_SPARE_LED_2_ID << 5);
-    sFilterConfig.FilterIdLow = (CAN_SPARE_LED_2_ID << 5);
+    sFilterConfig.FilterIdLow = (TLB_BATTERY_SHTDWN_LINE_TSAC_STATUS_FRAME_ID << 5);
 
     if (HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig) != HAL_OK)
     {
@@ -188,9 +181,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef *canHandle)
 void can_msg_send(CAN_HandleTypeDef *hcan, uint16_t id, uint8_t aData[], uint8_t dlc, uint32_t TimeOut)
 {
     CAN_TxHeaderTypeDef TxHeader;
-    uint32_t tx_mailbox;
-    static uint32_t can_counter_100us = 0;
-    can_counter_100us = tick_get_100us();
+    static uint32_t tx_mailbox;
 
     TxHeader.StdId = id;
     TxHeader.RTR = CAN_RTR_DATA;
@@ -198,22 +189,21 @@ void can_msg_send(CAN_HandleTypeDef *hcan, uint16_t id, uint8_t aData[], uint8_t
     TxHeader.DLC = dlc;
     TxHeader.TransmitGlobalTime = DISABLE;
 
-    while (HAL_CAN_GetTxMailboxesFreeLevel(hcan) < 1)
-    {
-        if (delay_fun(&can_counter_100us, TimeOut))
-        {
-            // Error_Handler();
-            HAL_CAN_ResetError(hcan);
-            HAL_CAN_AbortTxRequest(hcan, tx_mailbox);
-        }
-    }
+    // while (HAL_CAN_GetTxMailboxesFreeLevel(hcan) < 1)
+    //{
+    //     if (delay_fun(&can_counter_100us, TimeOut))
+    //     {
+    //         // Error_Handler();
+    //         HAL_CAN_ResetError(hcan);
+    //         HAL_CAN_AbortTxRequest(hcan, tx_mailbox);
+    //     }
+    // }
 
     if (HAL_CAN_AddTxMessage(hcan, &TxHeader, aData, &tx_mailbox) != HAL_OK)
     {
         /* Transmission request Error */
         // Error_Handler();
         HAL_CAN_ResetError(hcan);
-        HAL_CAN_AbortTxRequest(hcan, tx_mailbox);
     }
 }
 

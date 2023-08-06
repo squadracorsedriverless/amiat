@@ -29,7 +29,6 @@
 /* USER CODE BEGIN Includes */
 #include "can_comms.h"
 #include "mission.h"
-#include "tim.h"
 #include "utils.h"
 #include "visEffect.h"
 #include "ws2812_spi.h"
@@ -66,10 +65,6 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-    if (htim->Instance == TIM7) // tick
-    {
-        tick_100us++;
-    }
 }
 /* USER CODE END 0 */
 
@@ -111,6 +106,7 @@ int main(void)
 
     ws2812_spi_set_all(0);
     ws2812_spi_send(&hspi1);
+    HAL_CAN_Start(&hcan1);
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -125,7 +121,7 @@ int main(void)
         mission_run();
         // visHandle();
 
-        if (delay_fun(&delay_100us_last, 1000))
+        if (delay_fun(&delay_100us_last, 100))
         {
             uint8_t data = mission_is_confirmed() ? mission_get() : MISSION_NO;
 

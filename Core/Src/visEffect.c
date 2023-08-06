@@ -102,7 +102,7 @@ void visHandle2()
     {
         timestamp = HAL_GetTick();
 
-        visRainbow(WS2812_STRIP_LEN - 4);
+        visRainbow(WS2812_STRIP_LEN - 3);
         HAL_Delay(10);
         /*
                 switch(visSelect)

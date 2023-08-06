@@ -66,7 +66,7 @@ void mission_run()
             visHandle();
             return;
             // KITT
-            // if (delay_fun(&delay_100us_last, 1000))
+            // if (delay_fun(&delay_100us_last, 100))
             //{
             //    static int8_t direction = 1;
             //    if (out_mission >= NUM_MISSIONS - 1)
@@ -91,7 +91,7 @@ void mission_run()
         }
         else
         {
-            ws2812_spi_set_led(i - 1, WS2812_COLOR(255, 0, 0));
+            ws2812_spi_set_led(i - 1, WS2812_COLOR(0, 0, 0));
         }
     }
     ws2812_spi_send(&hspi1);
